@@ -2,6 +2,9 @@ server:
   port: 8761
 
 spring:
+  config:
+    activate:
+      onProfile: default
   application:
     name: discovery-server
 
@@ -17,3 +20,60 @@ eureka:
     registerWithEureka: false
     serviceUrl:
       defaultZone: http://localhost:8761/eureka
+
+  datacenter: Dardan
+  environment: Development
+
+---
+server:
+  port: 8762
+
+spring:
+  config:
+    activate:
+      onProfile: profile-01
+  application:
+    name: discovery-server
+
+eureka:
+  instance:
+    hostname: localhost
+    preferIpAddress: true
+    leaseExpirationDurationInSeconds: 30
+    leaseRenewalIntervalInSeconds: 30
+
+  client:
+    fetchRegistry: false
+    registerWithEureka: false
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
+  datacenter: Dardan
+  environment: Development
+
+---
+server:
+  port: 8763
+
+spring:
+  config:
+    activate:
+      onProfile: profile-02
+  application:
+    name: discovery-server
+
+eureka:
+  instance:
+    hostname: localhost
+    preferIpAddress: true
+    leaseExpirationDurationInSeconds: 30
+    leaseRenewalIntervalInSeconds: 30
+
+  client:
+    fetchRegistry: false
+    registerWithEureka: false
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
+  datacenter: Dardan
+  environment: Development
