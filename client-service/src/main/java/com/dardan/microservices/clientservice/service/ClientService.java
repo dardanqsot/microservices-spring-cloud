@@ -6,7 +6,6 @@ import com.dardan.microservices.clientservice.proxy.openfeign.UserServiceFeign;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,9 +17,32 @@ import java.util.List;
 public class ClientService {
 
     private final UserServiceFeign userServiceFeign;
-    private final CircuitBreakerFactory circuitBreakerFactory;
+    //private final CircuitBreakerFactory circuitBreakerFactory;
 
-    @CircuitBreaker(name = "user-service-cb", fallbackMethod = "alternativeUser")
+    @CircuitBreaker(name = "user-service-cb", fallbackMethod = "alternativeMethod")
+    public List<UserResponseRecord> getAllUser() {
+        System.out.println("EN RECORDS!");
+        List<UserResponse> records = userServiceFeign.getAllUser().getContent();
+
+        List<UserResponseRecord> recordList = new ArrayList<>();
+
+        for (UserResponse response : records) {
+            UserResponseRecord record = new UserResponseRecord(
+                    response.getId(),
+                    response.getName(),
+                    response.getLastname(),
+                    response.getUsername(),
+                    response.getEmail(),
+                    response.getPassword(),
+                    response.getRoles()
+            );
+            recordList.add(record);
+        }
+        return recordList;
+    }
+
+/*
+    @CircuitBreaker(name = "user-service-cb", fallbackMethod = "alternativeMethod")
     public List<UserResponseRecord> getAllUser() {
 
         //List<UserResponse> records = userServiceFeign.getAllUser().getContent();
@@ -46,7 +68,9 @@ public class ClientService {
         return recordList;
     }
 
-    private List<UserResponse> alternativeMethod(Throwable e) {
+*/
+
+    private List<UserResponse> alternativeUser(Throwable e) {
         log.info(e.getMessage());
         List<UserResponse> lstUserResponse = new ArrayList<>();
         UserResponse userResponse = UserResponse.builder()
@@ -58,7 +82,29 @@ public class ClientService {
                 .roles(new String[]{"FAKE", "ADMIN"})
                 .username("userFake")
                 .build();
+
+        // Llamar un servicio de cola
+        // Llamar a un servicio de topicos
+        // Llamar a un servicio alojado en otra región
+        // Llamar a un servicio que devuelva información de backup
         lstUserResponse.add(userResponse);
         return lstUserResponse;
+    }
+    private List<UserResponseRecord> alternativeMethod(Throwable e) {
+        //log.info(e.getMessage());
+        System.out.println("EN ALTERNATIVE");
+        List<UserResponseRecord> lisRecor = new ArrayList<>();
+        List<UserResponse> lstUserResponse = new ArrayList<>();
+        UserResponse userResponse = UserResponse.builder()
+                .id("USER9999")
+                .email("usuariofakeœgmail.com")
+                .lastname("Fake")
+                .name("Usuario")
+                .password("MyPassword")
+                .roles(new String[]{"FAKE", "ADMIN"})
+                .username("userFake")
+                .build();
+        lstUserResponse.add(userResponse);
+        return lisRecor;
     }
 }

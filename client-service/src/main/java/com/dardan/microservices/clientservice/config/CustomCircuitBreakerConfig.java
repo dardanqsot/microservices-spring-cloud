@@ -29,9 +29,9 @@ public class CustomCircuitBreakerConfig {
                         .slowCallDurationThreshold(Duration.ofMillis(1500L)) // Default 1 seg
 
                         .build())
-              //  .timeLimiterConfig(TimeLimiterConfig.custom()
-              //          .timeoutDuration(Duration.ofSeconds(2L))
-              //          .build())
+                .timeLimiterConfig(TimeLimiterConfig.custom()
+                        .timeoutDuration(Duration.ofSeconds(2L))
+                        .build())
                 .build()
         );
     }
