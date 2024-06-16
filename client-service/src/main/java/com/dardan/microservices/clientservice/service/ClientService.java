@@ -1,7 +1,9 @@
 package com.dardan.microservices.clientservice.service;
 
+import com.dardan.microservices.clientservice.model.response.ProductResponse;
 import com.dardan.microservices.clientservice.model.response.UserResponse;
 import com.dardan.microservices.clientservice.model.response.UserResponseRecord;
+import com.dardan.microservices.clientservice.proxy.openfeign.ProductServiceFeign;
 import com.dardan.microservices.clientservice.proxy.openfeign.UserServiceFeign;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import java.util.List;
 public class ClientService {
 
     private final UserServiceFeign userServiceFeign;
+    private final ProductServiceFeign productServiceFeign;
     //private final CircuitBreakerFactory circuitBreakerFactory;
 
     @CircuitBreaker(name = "user-service-cb", fallbackMethod = "alternativeMethod")
@@ -41,55 +44,59 @@ public class ClientService {
         return recordList;
     }
 
-/*
-    @CircuitBreaker(name = "user-service-cb", fallbackMethod = "alternativeMethod")
-    public List<UserResponseRecord> getAllUser() {
+    /*
+        @CircuitBreaker(name = "user-service-cb", fallbackMethod = "alternativeMethod")
+        public List<UserResponseRecord> getAllUser() {
 
-        //List<UserResponse> records = userServiceFeign.getAllUser().getContent();
+            //List<UserResponse> records = userServiceFeign.getAllUser().getContent();
 
-        List<UserResponse> records = circuitBreakerFactory.create("dardan")
-                .run(() -> userServiceFeign.getAllUser().getContent(),
-                        this::alternativeMethod);
+            List<UserResponse> records = circuitBreakerFactory.create("dardan")
+                    .run(() -> userServiceFeign.getAllUser().getContent(),
+                            this::alternativeMethod);
 
-        List<UserResponseRecord> recordList = new ArrayList<>();
+            List<UserResponseRecord> recordList = new ArrayList<>();
 
-        for (UserResponse response : records) {
-            UserResponseRecord record = new UserResponseRecord(
-                    response.getId(),
-                    response.getName(),
-                    response.getLastname(),
-                    response.getUsername(),
-                    response.getEmail(),
-                    response.getPassword(),
-                    response.getRoles()
-            );
-            recordList.add(record);
+            for (UserResponse response : records) {
+                UserResponseRecord record = new UserResponseRecord(
+                        response.getId(),
+                        response.getName(),
+                        response.getLastname(),
+                        response.getUsername(),
+                        response.getEmail(),
+                        response.getPassword(),
+                        response.getRoles()
+                );
+                recordList.add(record);
+            }
+            return recordList;
         }
-        return recordList;
+
+    */
+    @CircuitBreaker(name = "product-service-cb", fallbackMethod = "alternativeProduct")
+    public List<ProductResponse> getAllProducts() {
+        return productServiceFeign.getAllProducts();
     }
 
-*/
+    @CircuitBreaker(name = "product-service-cb", fallbackMethod = "alternativeProduct")
+    public List<ProductResponse> getAllProducts(boolean flag) {
+        return productServiceFeign.getAllProductsWithFlag(flag);
+    }
 
-    private List<UserResponse> alternativeUser(Throwable e) {
+
+    private List<ProductResponse> alternativeProduct(Throwable e) {
         log.info(e.getMessage());
-        List<UserResponse> lstUserResponse = new ArrayList<>();
-        UserResponse userResponse = UserResponse.builder()
-                .id("USER9999")
-                .email("usuariofakeœgmail.com")
-                .lastname("Fake")
-                .name("Usuario")
-                .password("MyPassword")
-                .roles(new String[]{"FAKE", "ADMIN"})
-                .username("userFake")
+        List<ProductResponse> lstUserResponse = new ArrayList<>();
+        ProductResponse userResponse = ProductResponse.builder()
+                .productId("P999999")
+                .productName("Producto Fake")
+                .productType("Fake")
+                .price(20L)
+                .stock(100)
                 .build();
-
-        // Llamar un servicio de cola
-        // Llamar a un servicio de topicos
-        // Llamar a un servicio alojado en otra región
-        // Llamar a un servicio que devuelva información de backup
         lstUserResponse.add(userResponse);
         return lstUserResponse;
     }
+
     private List<UserResponseRecord> alternativeMethod(Throwable e) {
         //log.info(e.getMessage());
         System.out.println("EN ALTERNATIVE");
@@ -107,4 +114,6 @@ public class ClientService {
         lstUserResponse.add(userResponse);
         return lisRecor;
     }
+
+
 }
