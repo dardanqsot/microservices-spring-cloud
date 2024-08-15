@@ -20,7 +20,7 @@ public class SecurityConfig {
     public SecurityWebFilterChain configure(ServerHttpSecurity http) {
 
         return http.authorizeExchange(auth -> auth
-                        .pathMatchers(HttpMethod.GET, "/api/product-service/**", "/api/product-query-service/**").permitAll()
+                        .pathMatchers(HttpMethod.GET, "/api/product-service/**").permitAll()
                         .pathMatchers(HttpMethod.POST, "/api/product-service/**").hasRole("ADMIN")
                         .anyExchange().authenticated()
                 )

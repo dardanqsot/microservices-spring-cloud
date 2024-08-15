@@ -16,7 +16,7 @@ import java.util.Map;
 @Service
 public class JwtService {
 
-    @Value("${darwin.security.key:darwin}")
+    @Value("${darwin.security.key:dardan}")
     private String dardanKey;
 
     public String generateToken(UserDetails userDetails) {
