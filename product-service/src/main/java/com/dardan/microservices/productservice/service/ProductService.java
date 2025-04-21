@@ -37,7 +37,6 @@ public class ProductService {
     public List<ProductDTO> getAllProducts() {
         UserDTO userDTO = new UserDTO();
         Iterable<ProductEntity> itProducts = productRepository.findAll();
-
         return StreamSupport.stream(itProducts.spliterator(), false).map(productEntity -> {
             ProductDTO productDTO = ProductDTO.builder().build();
             BeanUtils.copyProperties(productEntity, productDTO);
