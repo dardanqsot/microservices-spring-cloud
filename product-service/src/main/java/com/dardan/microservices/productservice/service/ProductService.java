@@ -1,9 +1,9 @@
 package com.dardan.microservices.productservice.service;
 
-import com.dardan.common.stub.model.UserDTO;
 import com.dardan.microservices.productservice.model.dto.ProductDTO;
 import com.dardan.microservices.productservice.model.entity.ProductEntity;
 import com.dardan.microservices.productservice.service.repository.ProductRepository;
+import com.dardan.microservices.productservice.util.KafkaUtil;
 import com.dardan.microservices.productservice.util.UtilMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -19,8 +19,8 @@ import java.util.stream.StreamSupport;
 public class ProductService {
 
     private final UtilMapper utilMapper;
-
     private final ProductRepository productRepository;
+    private final KafkaUtil kafkaUtil;
 
     @Value("${server.port}")
     private Integer port;
@@ -35,12 +35,12 @@ public class ProductService {
 
 
     public List<ProductDTO> getAllProducts() {
-        UserDTO userDTO = new UserDTO();
         Iterable<ProductEntity> itProducts = productRepository.findAll();
         return StreamSupport.stream(itProducts.spliterator(), false).map(productEntity -> {
             ProductDTO productDTO = ProductDTO.builder().build();
             BeanUtils.copyProperties(productEntity, productDTO);
             productDTO.setPort(port);
+            kafkaUtil.sendMessage(productDTO);
             return productDTO;
         }).collect(Collectors.toList());
     }
