@@ -1,6 +1,6 @@
 package com.dardan.microservices.productservice.config;
 
-import jakarta.ws.rs.core.GenericEntity;
+import com.dardan.commonmodels.entity.GenericEntity;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +22,7 @@ public class KafkaConfig {
     @Value("${kafka.dardan.port:9092}")
     private String kafkaPort;
 
-    public ProducerFactory<String, Object> producerFactory() {
+    public ProducerFactory<String, GenericEntity> producerFactory() {
         Map<String, Object> kafkaProperties = new HashMap<>();
 //        var kafkaProperties = new HashMap<>();
         kafkaProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer + ":" + kafkaPort);
@@ -32,7 +32,7 @@ public class KafkaConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, Object> kafkaTemplatHole() {
+    public KafkaTemplate<String, GenericEntity> kafkaTemplatHole() {
         return new KafkaTemplate<>(producerFactory());
     }
 

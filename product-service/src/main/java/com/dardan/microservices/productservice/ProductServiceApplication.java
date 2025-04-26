@@ -1,6 +1,7 @@
 package com.dardan.microservices.productservice;
 
-import com.dardan.microservices.productservice.model.entity.ProductEntity;
+
+import com.dardan.commonmodels.entity.ProductEntity;
 import com.dardan.microservices.productservice.service.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;

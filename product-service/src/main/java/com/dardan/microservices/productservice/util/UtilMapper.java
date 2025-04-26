@@ -1,7 +1,7 @@
 package com.dardan.microservices.productservice.util;
 
+import com.dardan.commonmodels.entity.ProductEntity;
 import com.dardan.microservices.productservice.model.dto.ProductDTO;
-import com.dardan.microservices.productservice.model.entity.ProductEntity;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
