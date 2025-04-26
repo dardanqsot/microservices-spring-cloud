@@ -2,10 +2,10 @@ package com.dardan.auditservice.config;
 
 import com.dardan.auditservice.repository.AuditInfoRepository;
 import com.dardan.auditservice.repository.ProductRepository;
-import com.mitocode.microservices.commonmodels.model.entity.AuditInfo;
-import com.mitocode.microservices.commonmodels.model.entity.GenericEntity;
-import com.mitocode.microservices.commonmodels.model.entity.ProductEntity;
-import com.mitocode.microservices.commonmodels.model.entity.UserEntity;
+import com.dardan.commonmodels.entity.AuditInfo;
+import com.dardan.commonmodels.entity.GenericEntity;
+import com.dardan.commonmodels.entity.ProductEntity;
+import com.dardan.commonmodels.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
