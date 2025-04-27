@@ -44,6 +44,7 @@ public class ProductService {
 
         Iterable<ProductEntity> itProducts = productRepository.findAll();
 
+/*
         kafkaUtil.sendMessage(UserEntity.builder()
                 .name("Darwin")
                 .lastname("Quispe")
@@ -60,6 +61,7 @@ public class ProductService {
                 .exception(null)
                 .exceptionDetails(null)
                 .build());
+*/
 
         return StreamSupport.stream(itProducts.spliterator(), false).map(productEntity -> {
             ProductDTO productDTO = ProductDTO.builder().build();

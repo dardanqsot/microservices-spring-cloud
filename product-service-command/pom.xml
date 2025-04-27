@@ -11,7 +11,7 @@
     <groupId>com.dardan.microservices</groupId>
     <artifactId>product-service-command</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>product-service</name>
+    <name>product-service-command</name>
     <description>Módulo para la gestión de los productos</description>
     <properties>
         <java.version>17</java.version>
@@ -122,7 +122,7 @@
             <artifactId>spring-kafka</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.mitocode.microservices</groupId>
+            <groupId>com.dardan</groupId>
             <artifactId>common-models</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
