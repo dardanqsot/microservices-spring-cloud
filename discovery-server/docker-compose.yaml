@@ -1,0 +1,97 @@
+version: "3.9"
+
+services:
+
+  mongo-service:
+    image: mongo
+    container_name: dardan-docker-mongo-service
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: dardan
+      MONGO_INITDB_ROOT_PASSWORD: dardan
+    networks:
+      - dardan
+    volumes:
+      - dardan-mongodb-storage:/data/db
+
+  mongo-express:
+    image: mongo-express
+    container_name: dardan-docker-mongo-express
+    ports: 
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: dardan
+      ME_CONFIG_MONGODB_ADMINPASSWORD: dardan
+      ME_CONFIG_MONGODB_URL: mongodb://dardan:dardan@mongo-service:27017
+    networks:
+      - dardan
+
+  discovery-server:
+    build: .
+    container_name: dardan-discovery-server
+    healthcheck:
+      test: [ "CMD", "curl", "http://localhost:8761"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    ports:
+      - 8761:8761
+    networks:
+      - dardan
+
+  config-server:
+    build: ../config-server/
+    container_name: dardan-config-server
+    healthcheck:
+      test: ["CMD", "curl", "http://localhost:9000/cloud-gateway/cer"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+    environment:
+      CUSTOM.SERVER.PORT: 9000
+      EUREKA.SERVER.HOSTNAME: http://discovery-server:8761/eureka
+    networks:
+      - dardan
+
+  product-service:
+    build: ../product-service/
+    container_name: dardan-product-service
+    depends_on:
+      config-server:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+    environment:
+      EUREKA.SERVER.HOSTNAME: http://discovery-server:8761/eureka
+      CONFIG.SERVER.HOSTNAME: http://config-server:9000
+      MONGODB.URL.CONNECTION: mongodb://dardan:dardan@mongo-service:27017/dardan?authSource=admin
+      KAFKA.SERVER.HOSTNAME: dardan-kafka-broker
+    networks:
+      - dardan
+
+  cloud-gateway:
+    build: ../cloud-gateway/
+    container_name: dardan-cloud-gateway
+    depends_on:
+      config-server:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+    ports:
+      - 9080:9080
+    environment:
+      EUREKA.SERVER.HOSTNAME: http://discovery-server:8761/eureka
+      CONFIG.SERVER.HOSTNAME: http://config-server:9000
+    networks:
+      - dardan
+
+volumes:
+  dardan-mongodb-storage:
+
+networks:
+  dardan:
+    name: dardan

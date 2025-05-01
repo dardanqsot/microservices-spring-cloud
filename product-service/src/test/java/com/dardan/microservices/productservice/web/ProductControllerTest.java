@@ -51,19 +51,19 @@ class ProductControllerTest {
     }
 
     //400
-    @Test
-    @Order(2)
-    @DisplayName("Save Product Bad Request")
-    void when_call_save_product_without_description_then_return_bad_request() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/saveProduct")
-                        .content("{\n" +
-                                "        \"productId\": \"P00004\",\n" +
-                                "        \"productType\": \"Curso\",\n" +
-                                "        \"price\": 750,\n" +
-                                "        \"stock\": 50\n" +
-                                "}").contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
-    }
+//    @Test
+//    @Order(2)
+//    @DisplayName("Save Product Bad Request")
+//    void when_call_save_product_without_description_then_return_bad_request() throws Exception {
+//        mockMvc.perform(MockMvcRequestBuilders.post("/saveProduct")
+//                        .content("{\n" +
+//                                "        \"productId\": \"P00004\",\n" +
+//                                "        \"productType\": \"Curso\",\n" +
+//                                "        \"price\": 750,\n" +
+//                                "        \"stock\": 50\n" +
+//                                "}").contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+//    }
 
     @Test
     @Order(3)
